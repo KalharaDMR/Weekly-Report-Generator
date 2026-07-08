@@ -11,6 +11,8 @@ import { UpdateReportDto } from './dto/update-report.dto';
 
 import { ReportStatus } from '@prisma/client';
 
+import { getSubmissionStatus } from '../common/utils/report-status.util';
+
 @Injectable()
 export class ReportsService {
   constructor(private prisma: PrismaService) {}
@@ -46,7 +48,7 @@ export class ReportsService {
   }
 
   async myReports(userId: string) {
-    return this.prisma.weeklyReport.findMany({
+    const reports = await this.prisma.weeklyReport.findMany({
       where: {
         userId,
       },
@@ -57,6 +59,14 @@ export class ReportsService {
         weekStart: 'desc',
       },
     });
+
+    return reports.map((report) => ({
+      ...report,
+      submissionStatus: getSubmissionStatus(
+        report.status,
+        report.weekEnd,
+      ),
+    }));
   }
 
   async findOne(id: string) {
@@ -73,7 +83,13 @@ export class ReportsService {
       throw new NotFoundException('Report not found');
     }
 
-    return report;
+    return {
+      ...report,
+      submissionStatus: getSubmissionStatus(
+        report.status,
+        report.weekEnd,
+      ),
+    };
   }
 
   async update(id: string, dto: UpdateReportDto) {
@@ -85,8 +101,12 @@ export class ReportsService {
       },
       data: {
         ...dto,
-        weekStart: dto.weekStart ? new Date(dto.weekStart) : undefined,
-        weekEnd: dto.weekEnd ? new Date(dto.weekEnd) : undefined,
+        weekStart: dto.weekStart
+          ? new Date(dto.weekStart)
+          : undefined,
+        weekEnd: dto.weekEnd
+          ? new Date(dto.weekEnd)
+          : undefined,
       },
     });
   }
@@ -116,14 +136,31 @@ export class ReportsService {
   }
 
   async allReports() {
-    return this.prisma.weeklyReport.findMany({
+    const reports = await this.prisma.weeklyReport.findMany({
       include: {
-        user: true,
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            department: true,
+            role: true,
+            status: true,
+          },
+        },
         project: true,
       },
       orderBy: {
         weekStart: 'desc',
       },
     });
+
+    return reports.map((report) => ({
+      ...report,
+      submissionStatus: getSubmissionStatus(
+        report.status,
+        report.weekEnd,
+      ),
+    }));
   }
 }

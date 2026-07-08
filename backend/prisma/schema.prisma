@@ -119,4 +119,3 @@ model WeeklyReport {
   @@index([userId, weekStart])
 
   @@map("weekly_reports")
-}

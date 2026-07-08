@@ -1,11 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { Role, UserStatus } from '@prisma/client';
 
 @Injectable()
 export class UsersService {
-  constructor(
-    private readonly prisma: PrismaService,
-  ) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   async create(data: {
     name: string;
@@ -17,7 +16,6 @@ export class UsersService {
     });
   }
 
-
   async findByEmail(email: string) {
     return this.prisma.user.findUnique({
       where: {
@@ -26,12 +24,48 @@ export class UsersService {
     });
   }
 
-
   async findById(id: string) {
     return this.prisma.user.findUnique({
       where: {
         id,
       },
+    });
+  }
+
+  async findAll() {
+    return this.prisma.user.findMany({
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        department: true,
+        role: true,
+        status: true,
+        createdAt: true,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+  }
+
+  async updateRole(id: string, role: Role) {
+    return this.prisma.user.update({
+      where: { id },
+      data: { role },
+    });
+  }
+
+  async updateStatus(id: string, status: UserStatus) {
+    return this.prisma.user.update({
+      where: { id },
+      data: { status },
+    });
+  }
+
+  async remove(id: string) {
+    return this.prisma.user.delete({
+      where: { id },
     });
   }
 }
