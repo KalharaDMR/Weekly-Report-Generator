@@ -9,6 +9,7 @@ import * as bcrypt from 'bcrypt';
 
 import { UsersService } from '../users/users.service';
 import { RegisterDto } from './dto/register.dto';
+import { Role, UserStatus } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -57,13 +58,13 @@ export class AuthService {
       throw new UnauthorizedException('Invalid email or password');
     }
 
-    if (user.status === 'PENDING') {
+    if (user.status === UserStatus.PENDING){
       throw new UnauthorizedException(
         'Your account is awaiting administrator approval.',
       );
     }
 
-    if (user.status === 'DEACTIVATED') {
+    if (user.status === UserStatus.DEACTIVATED) {
       throw new UnauthorizedException('Your account has been deactivated.');
     }
 
