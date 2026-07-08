@@ -7,6 +7,9 @@ import { UsersModule } from './users/users.module';
 
 import { APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from './auth/guards/roles.guard';
+import { ProjectsModule } from './projects/projects.module';
+import { ReportsModule } from './reports/reports.module';
+import { DashboardModule } from './dashboard/dashboard.module';
 
 @Module({
   imports: [
@@ -16,6 +19,9 @@ import { RolesGuard } from './auth/guards/roles.guard';
     PrismaModule,
     AuthModule,
     UsersModule,
+    ProjectsModule,
+    ReportsModule,
+    DashboardModule,
   ],
 
 })
