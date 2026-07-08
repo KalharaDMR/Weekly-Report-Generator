@@ -42,16 +42,19 @@ model User {
   projectAssignments ProjectAssignment[]
   projectsCreated    Project[]
 
+  @@index([department])
   @@map("users")
 }
 
 model Project {
-  id          String  @id @default(uuid())
-  name        String  @unique
+  id          String @id @default(uuid())
+  name        String @unique
   description String?
 
+  isActive Boolean @default(true)
+
   createdById String
-  createdBy   User   @relation(fields: [createdById], references: [id])
+  createdBy   User @relation(fields: [createdById], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -59,6 +62,7 @@ model Project {
   reports     WeeklyReport[]
   assignments ProjectAssignment[]
 
+  @@index([createdById])
   @@map("projects")
 }
 
@@ -74,6 +78,7 @@ model ProjectAssignment {
   project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
 
   @@unique([userId, projectId])
+
   @@map("project_assignments")
 }
 
@@ -86,12 +91,14 @@ model WeeklyReport {
   weekStart DateTime
   weekEnd   DateTime
 
-  tasksCompleted String
-  tasksPlanned   String
+  completedTasks String
+  plannedTasks   String
 
-  blockers    String?
+  blockers String?
+
   hoursWorked Float?
-  notes       String?
+
+  notes String?
 
   status ReportStatus @default(DRAFT)
 
@@ -103,11 +110,13 @@ model WeeklyReport {
   user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   project Project @relation(fields: [projectId], references: [id])
 
+  @@unique([userId, projectId, weekStart])
+
   @@index([userId])
   @@index([projectId])
   @@index([weekStart])
-
-  @@unique([userId, projectId, weekStart])
+  @@index([status])
+  @@index([userId, weekStart])
 
   @@map("weekly_reports")
 }
