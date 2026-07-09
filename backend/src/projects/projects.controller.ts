@@ -25,6 +25,9 @@ import { Role } from '@prisma/client';
 import { ApiTags } from '@nestjs/swagger';
 import { ApiBearerAuth } from '@nestjs/swagger';
 
+import { Query } from '@nestjs/common';
+import { PaginationDto } from '../common/dto/pagination.dto';
+
 @ApiTags('Projects')
 @ApiBearerAuth()
 @Controller('projects')
@@ -39,8 +42,8 @@ export class ProjectsController {
   }
 
   @Get()
-  findAll() {
-    return this.projectsService.findAll();
+  findAll(@Query() query: PaginationDto) {
+    return this.projectsService.findAll(query);
   }
 
   @Get(':id')

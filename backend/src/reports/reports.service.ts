@@ -14,6 +14,7 @@ import { ReportStatus } from '@prisma/client';
 import { getSubmissionStatus } from '../common/utils/report-status.util';
 
 import { ForbiddenException } from '@nestjs/common';
+import { PaginationDto } from '../common/dto/pagination.dto';
 
 @Injectable()
 export class ReportsService {
@@ -138,81 +139,121 @@ export class ReportsService {
     });
   }
 
-  async allReports() {
-    const reports = await this.prisma.weeklyReport.findMany({
-      include: {
-        user: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-            department: true,
-            role: true,
-            status: true,
+  async allReports(query: PaginationDto) {
+    const page = query.page ?? 1;
+    const limit = query.limit ?? 10;
+    const search = query.search;
+
+    const skip = (page - 1) * limit;
+
+    const where = search
+      ? {
+          OR: [
+            {
+              user: {
+                name: {
+                  contains: search,
+                  mode: 'insensitive' as const,
+                },
+              },
+            },
+            {
+              user: {
+                email: {
+                  contains: search,
+                  mode: 'insensitive' as const,
+                },
+              },
+            },
+            {
+              project: {
+                name: {
+                  contains: search,
+                  mode: 'insensitive' as const,
+                },
+              },
+            },
+          ],
+        }
+      : {};
+
+    const [reports, total] = await this.prisma.$transaction([
+      this.prisma.weeklyReport.findMany({
+        where,
+        skip,
+        take: limit,
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              department: true,
+              role: true,
+              status: true,
+            },
           },
+          project: true,
         },
-        project: true,
+        orderBy: {
+          weekStart: 'desc',
+        },
+      }),
+
+      this.prisma.weeklyReport.count({
+        where,
+      }),
+    ]);
+
+    return {
+      data: reports.map((report) => ({
+        ...report,
+        submissionStatus: getSubmissionStatus(report.status, report.weekEnd),
+      })),
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    };
+  }
+
+  async review(reportId: string, reviewerId: string, feedback?: string) {
+    const report = await this.findOne(reportId);
+
+    if (report.status !== ReportStatus.SUBMITTED) {
+      throw new ConflictException('Only submitted reports can be reviewed');
+    }
+
+    return this.prisma.weeklyReport.update({
+      where: {
+        id: reportId,
       },
-      orderBy: {
-        weekStart: 'desc',
+      data: {
+        status: ReportStatus.REVIEWED,
+        reviewedById: reviewerId,
+        reviewedAt: new Date(),
+        feedback,
       },
     });
-
-    return reports.map((report) => ({
-      ...report,
-      submissionStatus: getSubmissionStatus(report.status, report.weekEnd),
-    }));
   }
 
-  async review(
-  reportId: string,
-  reviewerId: string,
-  feedback?: string,
-) {
-  const report = await this.findOne(reportId);
+  async approve(reportId: string, approverId: string, feedback?: string) {
+    const report = await this.findOne(reportId);
 
-  if (report.status !== ReportStatus.SUBMITTED) {
-    throw new ConflictException(
-      'Only submitted reports can be reviewed',
-    );
+    if (report.status !== ReportStatus.REVIEWED) {
+      throw new ConflictException('Report must be reviewed before approval');
+    }
+
+    return this.prisma.weeklyReport.update({
+      where: {
+        id: reportId,
+      },
+      data: {
+        status: ReportStatus.APPROVED,
+        approvedById: approverId,
+        approvedAt: new Date(),
+        feedback,
+      },
+    });
   }
-
-  return this.prisma.weeklyReport.update({
-    where: {
-      id: reportId,
-    },
-    data: {
-      status: ReportStatus.REVIEWED,
-      reviewedById: reviewerId,
-      reviewedAt: new Date(),
-      feedback,
-    },
-  });
-}
-
-async approve(
-  reportId: string,
-  approverId: string,
- feedback?: string,
-) {
-  const report = await this.findOne(reportId);
-
-  if (report.status !== ReportStatus.REVIEWED) {
-    throw new ConflictException(
-      'Report must be reviewed before approval',
-    );
-  }
-
-  return this.prisma.weeklyReport.update({
-    where: {
-      id: reportId,
-    },
-    data: {
-      status: ReportStatus.APPROVED,
-      approvedById: approverId,
-      approvedAt: new Date(),
-      feedback,
-    },
-  });
-}
 }
