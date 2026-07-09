@@ -17,6 +17,12 @@ import { RolesGuard } from '../auth/guards/roles.guard';
 import { AssignUserDto } from './dto/assign-user.dto';
 import { ProjectAssignmentsService } from './project-assignments.service';
 
+import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth } from '@nestjs/swagger';
+
+
+@ApiTags('Assignments')
+@ApiBearerAuth()
 @Controller('project-assignments')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class ProjectAssignmentsController {

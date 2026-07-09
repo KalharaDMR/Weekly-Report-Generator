@@ -22,6 +22,11 @@ import { Roles } from '../auth/decorators/roles.decorator';
 
 import { Role } from '@prisma/client';
 
+import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth } from '@nestjs/swagger';
+
+@ApiTags('Projects')
+@ApiBearerAuth()
 @Controller('projects')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class ProjectsController {

@@ -163,4 +163,56 @@ export class ReportsService {
       submissionStatus: getSubmissionStatus(report.status, report.weekEnd),
     }));
   }
+
+  async review(
+  reportId: string,
+  reviewerId: string,
+  feedback?: string,
+) {
+  const report = await this.findOne(reportId);
+
+  if (report.status !== ReportStatus.SUBMITTED) {
+    throw new ConflictException(
+      'Only submitted reports can be reviewed',
+    );
+  }
+
+  return this.prisma.weeklyReport.update({
+    where: {
+      id: reportId,
+    },
+    data: {
+      status: ReportStatus.REVIEWED,
+      reviewedById: reviewerId,
+      reviewedAt: new Date(),
+      feedback,
+    },
+  });
+}
+
+async approve(
+  reportId: string,
+  approverId: string,
+ feedback?: string,
+) {
+  const report = await this.findOne(reportId);
+
+  if (report.status !== ReportStatus.REVIEWED) {
+    throw new ConflictException(
+      'Report must be reviewed before approval',
+    );
+  }
+
+  return this.prisma.weeklyReport.update({
+    where: {
+      id: reportId,
+    },
+    data: {
+      status: ReportStatus.APPROVED,
+      approvedById: approverId,
+      approvedAt: new Date(),
+      feedback,
+    },
+  });
+}
 }
