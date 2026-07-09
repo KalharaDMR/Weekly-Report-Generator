@@ -13,11 +13,24 @@ import { ReportStatus } from '@prisma/client';
 
 import { getSubmissionStatus } from '../common/utils/report-status.util';
 
+import { ForbiddenException } from '@nestjs/common';
+
 @Injectable()
 export class ReportsService {
   constructor(private prisma: PrismaService) {}
 
   async create(userId: string, dto: CreateReportDto) {
+    const assignment = await this.prisma.projectAssignment.findFirst({
+      where: {
+        userId,
+        projectId: dto.projectId,
+      },
+    });
+
+    if (!assignment) {
+      throw new ForbiddenException('You are not assigned to this project');
+    }
+
     const existing = await this.prisma.weeklyReport.findFirst({
       where: {
         userId,
@@ -62,10 +75,7 @@ export class ReportsService {
 
     return reports.map((report) => ({
       ...report,
-      submissionStatus: getSubmissionStatus(
-        report.status,
-        report.weekEnd,
-      ),
+      submissionStatus: getSubmissionStatus(report.status, report.weekEnd),
     }));
   }
 
@@ -85,10 +95,7 @@ export class ReportsService {
 
     return {
       ...report,
-      submissionStatus: getSubmissionStatus(
-        report.status,
-        report.weekEnd,
-      ),
+      submissionStatus: getSubmissionStatus(report.status, report.weekEnd),
     };
   }
 
@@ -101,12 +108,8 @@ export class ReportsService {
       },
       data: {
         ...dto,
-        weekStart: dto.weekStart
-          ? new Date(dto.weekStart)
-          : undefined,
-        weekEnd: dto.weekEnd
-          ? new Date(dto.weekEnd)
-          : undefined,
+        weekStart: dto.weekStart ? new Date(dto.weekStart) : undefined,
+        weekEnd: dto.weekEnd ? new Date(dto.weekEnd) : undefined,
       },
     });
   }
@@ -157,10 +160,7 @@ export class ReportsService {
 
     return reports.map((report) => ({
       ...report,
-      submissionStatus: getSubmissionStatus(
-        report.status,
-        report.weekEnd,
-      ),
+      submissionStatus: getSubmissionStatus(report.status, report.weekEnd),
     }));
   }
 }
