@@ -10,6 +10,7 @@ import { RolesGuard } from './auth/guards/roles.guard';
 import { ProjectsModule } from './projects/projects.module';
 import { ReportsModule } from './reports/reports.module';
 import { DashboardModule } from './dashboard/dashboard.module';
+import { ProjectAssignmentsModule } from './project-assignments/project-assignments.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { DashboardModule } from './dashboard/dashboard.module';
     ProjectsModule,
     ReportsModule,
     DashboardModule,
+    ProjectAssignmentsModule,
   ],
 
 })

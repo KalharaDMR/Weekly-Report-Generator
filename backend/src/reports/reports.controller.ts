@@ -20,8 +20,16 @@ import { RolesGuard } from '../auth/guards/roles.guard';
 
 import { Roles } from '../auth/decorators/roles.decorator';
 
-import { Role } from '@prisma/client';
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { ReviewReportDto } from './dto/review-report.dto';
+import { ApproveReportDto } from './dto/approve-report.dto';
 
+import { Role } from '@prisma/client';
+import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth } from '@nestjs/swagger';
+
+@ApiTags('Reports')
+@ApiBearerAuth()
 @Controller('reports')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class ReportsController {
@@ -70,4 +78,32 @@ export class ReportsController {
   remove(@Param('id') id: string) {
     return this.reportsService.delete(id);
   }
+
+  @Roles(Role.ADMIN, Role.MANAGER)
+@Patch(':id/review')
+review(
+  @Param('id') id: string,
+  @CurrentUser() user: any,
+  @Body() dto: ReviewReportDto,
+) {
+  return this.reportsService.review(
+    id,
+    user.id,
+    dto.feedback,
+  );
+}
+
+@Roles(Role.ADMIN, Role.MANAGER)
+@Patch(':id/approve')
+approve(
+  @Param('id') id: string,
+  @CurrentUser() user: any,
+  @Body() dto: ApproveReportDto,
+) {
+  return this.reportsService.approve(
+    id,
+    user.id,
+    dto.feedback,
+  );
+}
 }

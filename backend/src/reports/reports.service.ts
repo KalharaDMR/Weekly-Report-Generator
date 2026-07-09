@@ -11,11 +11,26 @@ import { UpdateReportDto } from './dto/update-report.dto';
 
 import { ReportStatus } from '@prisma/client';
 
+import { getSubmissionStatus } from '../common/utils/report-status.util';
+
+import { ForbiddenException } from '@nestjs/common';
+
 @Injectable()
 export class ReportsService {
   constructor(private prisma: PrismaService) {}
 
   async create(userId: string, dto: CreateReportDto) {
+    const assignment = await this.prisma.projectAssignment.findFirst({
+      where: {
+        userId,
+        projectId: dto.projectId,
+      },
+    });
+
+    if (!assignment) {
+      throw new ForbiddenException('You are not assigned to this project');
+    }
+
     const existing = await this.prisma.weeklyReport.findFirst({
       where: {
         userId,
@@ -46,7 +61,7 @@ export class ReportsService {
   }
 
   async myReports(userId: string) {
-    return this.prisma.weeklyReport.findMany({
+    const reports = await this.prisma.weeklyReport.findMany({
       where: {
         userId,
       },
@@ -57,6 +72,11 @@ export class ReportsService {
         weekStart: 'desc',
       },
     });
+
+    return reports.map((report) => ({
+      ...report,
+      submissionStatus: getSubmissionStatus(report.status, report.weekEnd),
+    }));
   }
 
   async findOne(id: string) {
@@ -73,7 +93,10 @@ export class ReportsService {
       throw new NotFoundException('Report not found');
     }
 
-    return report;
+    return {
+      ...report,
+      submissionStatus: getSubmissionStatus(report.status, report.weekEnd),
+    };
   }
 
   async update(id: string, dto: UpdateReportDto) {
@@ -116,14 +139,80 @@ export class ReportsService {
   }
 
   async allReports() {
-    return this.prisma.weeklyReport.findMany({
+    const reports = await this.prisma.weeklyReport.findMany({
       include: {
-        user: true,
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            department: true,
+            role: true,
+            status: true,
+          },
+        },
         project: true,
       },
       orderBy: {
         weekStart: 'desc',
       },
     });
+
+    return reports.map((report) => ({
+      ...report,
+      submissionStatus: getSubmissionStatus(report.status, report.weekEnd),
+    }));
   }
+
+  async review(
+  reportId: string,
+  reviewerId: string,
+  feedback?: string,
+) {
+  const report = await this.findOne(reportId);
+
+  if (report.status !== ReportStatus.SUBMITTED) {
+    throw new ConflictException(
+      'Only submitted reports can be reviewed',
+    );
+  }
+
+  return this.prisma.weeklyReport.update({
+    where: {
+      id: reportId,
+    },
+    data: {
+      status: ReportStatus.REVIEWED,
+      reviewedById: reviewerId,
+      reviewedAt: new Date(),
+      feedback,
+    },
+  });
+}
+
+async approve(
+  reportId: string,
+  approverId: string,
+ feedback?: string,
+) {
+  const report = await this.findOne(reportId);
+
+  if (report.status !== ReportStatus.REVIEWED) {
+    throw new ConflictException(
+      'Report must be reviewed before approval',
+    );
+  }
+
+  return this.prisma.weeklyReport.update({
+    where: {
+      id: reportId,
+    },
+    data: {
+      status: ReportStatus.APPROVED,
+      approvedById: approverId,
+      approvedAt: new Date(),
+      feedback,
+    },
+  });
+}
 }
