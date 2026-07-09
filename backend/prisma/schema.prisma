@@ -22,6 +22,8 @@ enum UserStatus {
 enum ReportStatus {
   DRAFT
   SUBMITTED
+  REVIEWED
+  APPROVED
 }
 
 model User {
@@ -47,14 +49,14 @@ model User {
 }
 
 model Project {
-  id          String @id @default(uuid())
-  name        String @unique
+  id          String  @id @default(uuid())
+  name        String  @unique
   description String?
 
   isActive Boolean @default(true)
 
   createdById String
-  createdBy   User @relation(fields: [createdById], references: [id])
+  createdBy   User   @relation(fields: [createdById], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -78,7 +80,6 @@ model ProjectAssignment {
   project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
 
   @@unique([userId, projectId])
-
   @@map("project_assignments")
 }
 
@@ -104,10 +105,19 @@ model WeeklyReport {
 
   submittedAt DateTime?
 
+  reviewedById String?
+  reviewedAt DateTime?
+
+  approvedById String?
+  approvedAt DateTime?
+
+  feedback String?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   project Project @relation(fields: [projectId], references: [id])
 
   @@unique([userId, projectId, weekStart])
@@ -116,6 +126,6 @@ model WeeklyReport {
   @@index([projectId])
   @@index([weekStart])
   @@index([status])
-  @@index([userId, weekStart])
 
   @@map("weekly_reports")
+}
