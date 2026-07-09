@@ -8,6 +8,7 @@ import { PrismaService } from '../prisma/prisma.service';
 
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
+import { PaginationDto } from '../common/dto/pagination.dto';
 
 @Injectable()
 export class ProjectsService {
@@ -32,12 +33,54 @@ export class ProjectsService {
     });
   }
 
-  async findAll() {
-    return this.prisma.project.findMany({
-      orderBy: {
-        createdAt: 'desc',
-      },
-    });
+  async findAll(query: PaginationDto) {
+    const page = query.page ?? 1;
+    const limit = query.limit ?? 10;
+    const search = query.search;
+
+    const skip = (page - 1) * limit;
+
+    const where = search
+      ? {
+          OR: [
+            {
+              name: {
+                contains: search,
+                mode: 'insensitive' as const,
+              },
+            },
+            {
+              description: {
+                contains: search,
+                mode: 'insensitive' as const,
+              },
+            },
+          ],
+        }
+      : {};
+
+    const [projects, total] = await this.prisma.$transaction([
+      this.prisma.project.findMany({
+        where,
+        skip,
+        take: limit,
+        orderBy: {
+          createdAt: 'desc',
+        },
+      }),
+
+      this.prisma.project.count({
+        where,
+      }),
+    ]);
+
+    return {
+      data: projects,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    };
   }
 
   async findOne(id: string) {
