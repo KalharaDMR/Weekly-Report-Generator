@@ -42,9 +42,7 @@ export class ProjectAssignmentsService {
     });
 
     if (existing) {
-      throw new ConflictException(
-        'User already assigned to this project',
-      );
+      throw new ConflictException('User already assigned to this project');
     }
 
     return this.prisma.projectAssignment.create({
@@ -90,6 +88,18 @@ export class ProjectAssignmentsService {
     return this.prisma.projectAssignment.delete({
       where: {
         id,
+      },
+    });
+  }
+
+  async findAll() {
+    return this.prisma.projectAssignment.findMany({
+      include: {
+        user: true,
+        project: true,
+      },
+      orderBy: {
+        assignedAt: 'desc',
       },
     });
   }

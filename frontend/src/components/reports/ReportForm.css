@@ -1,0 +1,108 @@
+/* ReportForm.css */
+
+.report-form-container {
+  border: 1px solid #e2e8f0;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  margin-top: 1.5rem;
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.report-form-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #0f172a;
+  margin-bottom: 1.25rem;
+  letter-spacing: -0.3px;
+}
+
+.report-form-group {
+  margin-bottom: 1rem;
+}
+
+.report-form-group label {
+  display: block;
+  font-weight: 500;
+  font-size: 0.9rem;
+  color: #334155;
+  margin-bottom: 0.25rem;
+}
+
+.report-form-control {
+  width: 100%;
+  padding: 0.6rem 0.9rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.5rem;
+  font-size: 0.95rem;
+  background: #f8fafc;
+  transition: border 0.2s, box-shadow 0.2s, background 0.2s;
+  outline: none;
+}
+
+.report-form-control:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+  background: #ffffff;
+}
+
+.report-form-control::placeholder {
+  color: #94a3b8;
+}
+
+textarea.report-form-control {
+  min-height: 80px;
+  resize: vertical;
+}
+
+.report-form-row {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.report-form-row .report-form-group {
+  flex: 1 1 200px;
+}
+
+.report-form-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.report-form-btn {
+  padding: 0.6rem 1.5rem;
+  border: none;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.report-form-btn-primary {
+  background: #2563eb;
+  color: white;
+}
+
+.report-form-btn-primary:hover {
+  background: #1d4ed8;
+}
+
+.report-form-btn-primary:active {
+  transform: scale(0.97);
+}
+
+.report-form-btn-secondary {
+  background: #e2e8f0;
+  color: #1e293b;
+}
+
+.report-form-btn-secondary:hover {
+  background: #cbd5e1;
+}
+
+.report-form-btn-secondary:active {
+  transform: scale(0.97);
+}

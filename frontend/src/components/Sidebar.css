@@ -1,0 +1,75 @@
+/* Sidebar.css */
+
+.sidebar {
+  width: 250px;
+  background: #0f172a; /* dark blue-gray */
+  color: #f1f5f9;
+  padding: 1.5rem 1rem;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+  overflow-y: auto;
+  border-right: 1px solid #1e293b;
+}
+
+.sidebar-brand {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.3px;
+  color: #e2e8f0;
+}
+
+.sidebar-divider {
+  border: none;
+  border-top: 1px solid #334155;
+  margin: 0.8rem 0;
+}
+
+.sidebar-user {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  margin-bottom: 1.5rem;
+}
+
+.sidebar-user-name {
+  font-weight: 600;
+  font-size: 1rem;
+  color: #f1f5f9;
+}
+
+.sidebar-user-role {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #94a3b8;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+}
+
+.sidebar-link {
+  display: block;
+  padding: 0.6rem 1rem;
+  color: #cbd5e1;
+  text-decoration: none;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  transition: background 0.2s, color 0.2s;
+}
+
+.sidebar-link:hover {
+  background: #1e293b;
+  color: #ffffff;
+}
+
+.sidebar-link:active {
+  background: #334155;
+}
