@@ -1,64 +1,36 @@
 import { Link } from "react-router-dom";
-
 import useAuth from "../hooks/useAuth";
+
+import "./Sidebar.css"; // <-- import the CSS
 
 export default function Sidebar() {
   const { user } = useAuth();
 
   return (
-    <div
-      style={{
-        width: 250,
-        background: "#1f2937",
-        color: "white",
-        padding: 20,
-      }}
-    >
-      <h2>Weekly Reports</h2>
+    <div className="sidebar">
+      <h2 className="sidebar-brand">📋 Weekly Reports</h2>
+      <hr className="sidebar-divider" />
 
-      <hr />
+      <div className="sidebar-user">
+        <span className="sidebar-user-name">{user?.name}</span>
+        <span className="sidebar-user-role">{user?.role?.replace("_", " ")}</span>
+      </div>
 
-      <p>{user?.name}</p>
+      <nav className="sidebar-nav">
+        <Link to="/dashboard" className="sidebar-link">Dashboard</Link>
+        <Link to="/reports" className="sidebar-link">Reports</Link>
 
-      <p>{user?.role}</p>
+        {user?.role !== "TEAM_MEMBER" && (
+          <>
+            <Link to="/projects" className="sidebar-link">Projects</Link>
+            <Link to="/assignments" className="sidebar-link">Assignments</Link>
+          </>
+        )}
 
-      <br />
-
-      <Link to="/dashboard">Dashboard</Link>
-
-      <br />
-      <br />
-
-      <Link to="/reports">
-        Reports
-      </Link>
-
-      <br />
-      <br />
-
-      {user?.role !== "TEAM_MEMBER" && (
-        <>
-          <Link to="/projects">
-            Projects
-          </Link>
-
-          <br />
-          <br />
-
-          <Link to="/assignments">
-            Assignments
-          </Link>
-
-          <br />
-          <br />
-        </>
-      )}
-
-      {user?.role === "ADMIN" && (
-        <Link to="/users">
-          Users
-        </Link>
-      )}
+        {user?.role === "ADMIN" && (
+          <Link to="/users" className="sidebar-link">Users</Link>
+        )}
+      </nav>
     </div>
   );
 }

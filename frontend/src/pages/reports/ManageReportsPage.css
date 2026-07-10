@@ -1,0 +1,142 @@
+/* ManageReportsPage.css */
+
+.manage-reports-page {
+  padding: 0.5rem 0;
+}
+
+.manage-reports-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.manage-reports-header h2 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+}
+
+.manage-reports-table-wrapper {
+  background: #ffffff;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  border: 1px solid #f1f5f9;
+  overflow-x: auto;
+  padding: 0.25rem 0;
+}
+
+.manage-reports-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.manage-reports-table th {
+  background: #f8fafc;
+  color: #1e293b;
+  font-weight: 600;
+  text-align: left;
+  padding: 0.75rem 1rem;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.manage-reports-table td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #f1f5f9;
+  color: #334155;
+}
+
+.manage-reports-table tr:hover td {
+  background: #fafcff;
+}
+
+.manage-reports-table .status-badge {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: #e2e8f0;
+  color: #475569;
+}
+
+.manage-reports-table .status-submitted {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.manage-reports-table .status-reviewed {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.manage-reports-table .status-approved {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.manage-reports-btn {
+  padding: 0.3rem 0.9rem;
+  border: none;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.manage-reports-btn:active {
+  transform: scale(0.95);
+}
+
+.manage-reports-btn-primary {
+  background: #2563eb;
+  color: white;
+}
+
+.manage-reports-btn-primary:hover {
+  background: #1d4ed8;
+}
+
+.manage-reports-btn-success {
+  background: #16a34a;
+  color: white;
+}
+
+.manage-reports-btn-success:hover {
+  background: #15803d;
+}
+
+.manage-reports-btn-secondary {
+  background: #e2e8f0;
+  color: #1e293b;
+}
+
+.manage-reports-btn-secondary:hover {
+  background: #cbd5e1;
+}
+
+.manage-reports-approved-text {
+  font-weight: 600;
+  color: #16a34a;
+}
+
+.manage-reports-empty {
+  text-align: center;
+  color: #94a3b8;
+  padding: 2rem 0;
+  font-size: 0.95rem;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .manage-reports-table th,
+  .manage-reports-table td {
+    padding: 0.5rem 0.6rem;
+    font-size: 0.85rem;
+  }
+}

@@ -1,14 +1,11 @@
 import { useEffect, useState } from "react";
 import { ProjectService } from "../../services/project.service";
 
+import "./ProjectsPage.css"; // <-- import the CSS
+
 export default function ProjectsPage() {
   const [projects, setProjects] = useState<any[]>([]);
-
-  const [form, setForm] = useState({
-    name: "",
-    description: "",
-  });
-
+  const [form, setForm] = useState({ name: "", description: "" });
   const [editing, setEditing] = useState<any>(null);
 
   useEffect(() => {
@@ -17,7 +14,6 @@ export default function ProjectsPage() {
 
   async function loadProjects() {
     const res = await ProjectService.getAll();
-
     setProjects(res.data.data ?? res.data);
   }
 
@@ -27,100 +23,101 @@ export default function ProjectsPage() {
     } else {
       await ProjectService.create(form);
     }
-
     setEditing(null);
-
-    setForm({
-      name: "",
-      description: "",
-    });
-
+    setForm({ name: "", description: "" });
     loadProjects();
   }
 
   async function remove(id: string) {
     if (!confirm("Delete project?")) return;
-
     await ProjectService.remove(id);
-
     loadProjects();
   }
 
   return (
-    <div>
-      <h2>Projects</h2>
+    <div className="projects-page">
+      <div className="projects-header">
+        <h2>📁 Projects</h2>
+      </div>
 
-      <input
-        placeholder="Project Name"
-        value={form.name}
-        onChange={(e) =>
-          setForm({
-            ...form,
-            name: e.target.value,
-          })
-        }
-      />
+      <div className="projects-form">
+        <div className="projects-form-group">
+          <label htmlFor="project-name">Project Name</label>
+          <input
+            id="project-name"
+            className="projects-input"
+            placeholder="Enter project name"
+            value={form.name}
+            onChange={(e) => setForm({ ...form, name: e.target.value })}
+          />
+        </div>
 
-      <br />
-      <br />
+        <div className="projects-form-group">
+          <label htmlFor="project-desc">Description</label>
+          <textarea
+            id="project-desc"
+            className="projects-input projects-textarea"
+            placeholder="Brief description"
+            value={form.description}
+            onChange={(e) => setForm({ ...form, description: e.target.value })}
+          />
+        </div>
 
-      <textarea
-        placeholder="Description"
-        value={form.description}
-        onChange={(e) =>
-          setForm({
-            ...form,
-            description: e.target.value,
-          })
-        }
-      />
+        <button className="projects-btn-primary" onClick={save}>
+          {editing ? "Update" : "Create"}
+        </button>
+      </div>
 
-      <br />
-      <br />
-
-      <button onClick={save}>{editing ? "Update" : "Create"}</button>
-
-      <hr />
-
-      <table border={1} cellPadding={8}>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Active</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          {projects.map((p) => (
-            <tr key={p.id}>
-              <td>{p.name}</td>
-
-              <td>{p.description}</td>
-
-              <td>{p.isActive ? "Yes" : "No"}</td>
-
-              <td>
-                <button
-                  onClick={() => {
-                    setEditing(p);
-
-                    setForm({
-                      name: p.name,
-                      description: p.description || "",
-                    });
-                  }}
-                >
-                  Edit
-                </button>
-
-                <button onClick={() => remove(p.id)}>Delete</button>
-              </td>
+      <div className="projects-table-wrapper">
+        <table className="projects-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Description</th>
+              <th>Status</th>
+              <th>Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {projects.length === 0 ? (
+              <tr>
+                <td colSpan={4} className="projects-empty">
+                  No projects yet.
+                </td>
+              </tr>
+            ) : (
+              projects.map((p) => (
+                <tr key={p.id}>
+                  <td>{p.name}</td>
+                  <td>{p.description || "—"}</td>
+                  <td>
+                    <span className={`badge ${p.isActive ? 'badge-active' : 'badge-inactive'}`}>
+                      {p.isActive ? "Active" : "Inactive"}
+                    </span>
+                  </td>
+                  <td>
+                    <button
+                      className="projects-btn-edit"
+                      onClick={() => {
+                        setEditing(p);
+                        setForm({ name: p.name, description: p.description || "" });
+                      }}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      className="projects-btn-danger"
+                      onClick={() => remove(p.id)}
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

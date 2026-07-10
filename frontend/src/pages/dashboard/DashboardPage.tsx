@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { DashboardService } from "../../services/dashboard.service";
 
+import "./DashboardPage.css"; // <-- import the CSS
+
 export default function DashboardPage() {
   const [stats, setStats] = useState<any>(null);
-
   const role = localStorage.getItem("role");
 
   useEffect(() => {
@@ -16,152 +17,81 @@ export default function DashboardPage() {
   }
 
   if (!stats) {
-    return <h2>Loading Dashboard...</h2>;
+    return (
+      <div className="dashboard-loading">
+        <span>⏳ Loading Dashboard...</span>
+      </div>
+    );
   }
 
   return (
-    <div>
-      <h1>
-        {role === "TEAM_MEMBER"
-          ? "My Dashboard"
-          : "Management Dashboard"}
+    <div className="dashboard-page">
+      <h1 className="dashboard-title">
+        {role === "TEAM_MEMBER" ? "📊 My Dashboard" : "📈 Management Dashboard"}
       </h1>
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(5,1fr)",
-          gap: 20,
-          marginBottom: 40,
-        }}
-      >
-        <Card title="Total Reports" value={stats.total} color="#444" />
+      <div className="dashboard-cards-grid">
+        <Card title="Total Reports" value={stats.total} color="#475569" />
 
         {role === "TEAM_MEMBER" ? (
           <>
-            <Card title="Draft" value={stats.draft} color="#777" />
-
-            <Card
-              title="Submitted"
-              value={stats.submitted}
-              color="#f39c12"
-            />
-
-            <Card
-              title="Reviewed"
-              value={stats.reviewed}
-              color="#3498db"
-            />
-
-            <Card
-              title="Approved"
-              value={stats.approved}
-              color="#2ecc71"
-            />
+            <Card title="Draft" value={stats.draft} color="#94a3b8" />
+            <Card title="Submitted" value={stats.submitted} color="#f59e0b" />
+            <Card title="Reviewed" value={stats.reviewed} color="#3b82f6" />
+            <Card title="Approved" value={stats.approved} color="#22c55e" />
           </>
         ) : (
           <>
-            <Card
-              title="Waiting Review"
-              value={stats.submitted}
-              color="#f39c12"
-            />
-
-            <Card
-              title="Reviewed"
-              value={stats.reviewed}
-              color="#3498db"
-            />
-
-            <Card
-              title="Approved"
-              value={stats.approved}
-              color="#2ecc71"
-            />
-
-            <Card
-              title="Draft Reports"
-              value={stats.draft}
-              color="#777"
-            />
+            <Card title="Waiting Review" value={stats.submitted} color="#f59e0b" />
+            <Card title="Reviewed" value={stats.reviewed} color="#3b82f6" />
+            <Card title="Approved" value={stats.approved} color="#22c55e" />
+            <Card title="Draft Reports" value={stats.draft} color="#94a3b8" />
           </>
         )}
       </div>
 
-      <h2>Recent Reports</h2>
+      <h2 className="dashboard-recent-title">📄 Recent Reports</h2>
 
-      <table
-        border={1}
-        cellPadding={10}
-        style={{
-          width: "100%",
-          background: "white",
-        }}
-      >
-        <thead>
-          <tr>
-            {role !== "TEAM_MEMBER" && <th>Employee</th>}
-
-            <th>Project</th>
-
-            <th>Week</th>
-
-            <th>Status</th>
-
-            <th>Hours</th>
-
-            <th>Submission</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          {stats.reports.slice(0, 5).map((report: any) => (
-            <tr key={report.id}>
-              {role !== "TEAM_MEMBER" && (
-                <td>{report.user?.name}</td>
-              )}
-
-              <td>{report.project.name}</td>
-
-              <td>
-                {new Date(report.weekStart).toLocaleDateString()}
-              </td>
-
-              <td>{report.status}</td>
-
-              <td>{report.hoursWorked}</td>
-
-              <td>{report.submissionStatus}</td>
+      <div className="dashboard-table-wrapper">
+        <table className="dashboard-table">
+          <thead>
+            <tr>
+              {role !== "TEAM_MEMBER" && <th>Employee</th>}
+              <th>Project</th>
+              <th>Week</th>
+              <th>Status</th>
+              <th>Hours</th>
+              <th>Submission</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {stats.reports.slice(0, 5).map((report: any) => (
+              <tr key={report.id}>
+                {role !== "TEAM_MEMBER" && <td>{report.user?.name}</td>}
+                <td>{report.project.name}</td>
+                <td>{new Date(report.weekStart).toLocaleDateString()}</td>
+                <td>
+                  <span className="status-badge">{report.status}</span>
+                </td>
+                <td>{report.hoursWorked}</td>
+                <td>
+                  <span className="status-badge">{report.submissionStatus}</span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
 
-function Card({
-  title,
-  value,
-  color,
-}: {
-  title: string;
-  value: number;
-  color: string;
-}) {
+// Card component – inline, but we add className and use style for border color
+function Card({ title, value, color }: { title: string; value: number; color: string }) {
   return (
-    <div
-      style={{
-        background: color,
-        color: "white",
-        padding: 20,
-        borderRadius: 10,
-        textAlign: "center",
-      }}
-    >
-      <h3>{title}</h3>
-
-      <h1>{value}</h1>
+    <div className="dashboard-card" style={{ borderLeftColor: color }}>
+      <div className="dashboard-card-title">{title}</div>
+      <div className="dashboard-card-value">{value}</div>
     </div>
   );
 }

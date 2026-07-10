@@ -1,0 +1,35 @@
+/* DashboardCard.css */
+
+.dashboard-card {
+  min-width: 220px;
+  border-radius: 0.75rem !important; /* override MUI default */
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+  background: #ffffff;
+  border: 1px solid #f1f5f9;
+}
+
+.dashboard-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px -8px rgba(0, 0, 0, 0.12);
+}
+
+.dashboard-card-content {
+  padding: 1.25rem 1.5rem !important; /* override MUI default padding */
+}
+
+.dashboard-card-title {
+  font-size: 0.8rem !important;
+  font-weight: 600 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: #64748b !important;
+  margin-bottom: 0.25rem !important;
+}
+
+.dashboard-card-value {
+  font-size: 2rem !important;
+  font-weight: 700 !important;
+  color: #0f172a !important;
+  line-height: 1.2 !important;
+}

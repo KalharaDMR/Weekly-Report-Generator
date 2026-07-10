@@ -2,15 +2,14 @@ import { useEffect, useState } from "react";
 import { ReportService } from "../../services/report.service";
 import { ProjectService } from "../../services/project.service";
 
+import "./ReportForm.css"; // <-- import the CSS
+
 interface Props {
   report?: any;
   onSuccess: () => void;
 }
 
-export default function ReportForm({
-  report,
-  onSuccess,
-}: Props) {
+export default function ReportForm({ report, onSuccess }: Props) {
   const [projects, setProjects] = useState<any[]>([]);
 
   const [form, setForm] = useState({
@@ -52,158 +51,128 @@ export default function ReportForm({
     } else {
       await ReportService.create(form);
     }
-
     onSuccess();
   }
 
   return (
-    <div
-      style={{
-        border: "1px solid #ccc",
-        padding: 20,
-        marginTop: 20,
-      }}
-    >
-      <h3>{report ? "Edit Report" : "Create Report"}</h3>
+    <div className="report-form-container">
+      <h3 className="report-form-title">
+        {report ? "Edit Report" : "Create Report"}
+      </h3>
 
-      <select
-        value={form.projectId}
-        onChange={(e) =>
-          setForm({
-            ...form,
-            projectId: e.target.value,
-          })
-        }
-      >
-        <option value="">Select Project</option>
+      <div className="report-form-group">
+        <label>Project</label>
+        <select
+          className="report-form-control"
+          value={form.projectId}
+          onChange={(e) =>
+            setForm({ ...form, projectId: e.target.value })
+          }
+        >
+          <option value="">Select Project</option>
+          {projects.map((p) => (
+            <option key={p.id} value={p.id}>
+              {p.name}
+            </option>
+          ))}
+        </select>
+      </div>
 
-        {projects.map((p) => (
-          <option key={p.id} value={p.id}>
-            {p.name}
-          </option>
-        ))}
-      </select>
+      <div className="report-form-row">
+        <div className="report-form-group">
+          <label>Week Start</label>
+          <input
+            type="date"
+            className="report-form-control"
+            value={form.weekStart}
+            onChange={(e) =>
+              setForm({ ...form, weekStart: e.target.value })
+            }
+          />
+        </div>
 
-      <br />
-      <br />
+        <div className="report-form-group">
+          <label>Week End</label>
+          <input
+            type="date"
+            className="report-form-control"
+            value={form.weekEnd}
+            onChange={(e) =>
+              setForm({ ...form, weekEnd: e.target.value })
+            }
+          />
+        </div>
+      </div>
 
-      <label>Week Start</label>
+      <div className="report-form-group">
+        <label>Completed Tasks</label>
+        <textarea
+          className="report-form-control"
+          placeholder="What did you accomplish?"
+          value={form.completedTasks}
+          onChange={(e) =>
+            setForm({ ...form, completedTasks: e.target.value })
+          }
+        />
+      </div>
 
-      <br />
+      <div className="report-form-group">
+        <label>Planned Tasks</label>
+        <textarea
+          className="report-form-control"
+          placeholder="What are your next steps?"
+          value={form.plannedTasks}
+          onChange={(e) =>
+            setForm({ ...form, plannedTasks: e.target.value })
+          }
+        />
+      </div>
 
-      <input
-        type="date"
-        value={form.weekStart}
-        onChange={(e) =>
-          setForm({
-            ...form,
-            weekStart: e.target.value,
-          })
-        }
-      />
+      <div className="report-form-group">
+        <label>Blockers</label>
+        <textarea
+          className="report-form-control"
+          placeholder="Any issues blocking progress?"
+          value={form.blockers}
+          onChange={(e) =>
+            setForm({ ...form, blockers: e.target.value })
+          }
+        />
+      </div>
 
-      <br />
-      <br />
+      <div className="report-form-group">
+        <label>Hours Worked</label>
+        <input
+          type="number"
+          className="report-form-control"
+          placeholder="e.g. 8"
+          value={form.hoursWorked}
+          onChange={(e) =>
+            setForm({ ...form, hoursWorked: Number(e.target.value) })
+          }
+        />
+      </div>
 
-      <label>Week End</label>
+      <div className="report-form-group">
+        <label>Notes</label>
+        <textarea
+          className="report-form-control"
+          placeholder="Additional notes..."
+          value={form.notes}
+          onChange={(e) =>
+            setForm({ ...form, notes: e.target.value })
+          }
+        />
+      </div>
 
-      <br />
-
-      <input
-        type="date"
-        value={form.weekEnd}
-        onChange={(e) =>
-          setForm({
-            ...form,
-            weekEnd: e.target.value,
-          })
-        }
-      />
-
-      <br />
-      <br />
-
-      <textarea
-        placeholder="Completed Tasks"
-        value={form.completedTasks}
-        onChange={(e) =>
-          setForm({
-            ...form,
-            completedTasks: e.target.value,
-          })
-        }
-      />
-
-      <br />
-      <br />
-
-      <textarea
-        placeholder="Planned Tasks"
-        value={form.plannedTasks}
-        onChange={(e) =>
-          setForm({
-            ...form,
-            plannedTasks: e.target.value,
-          })
-        }
-      />
-
-      <br />
-      <br />
-
-      <textarea
-        placeholder="Blockers"
-        value={form.blockers}
-        onChange={(e) =>
-          setForm({
-            ...form,
-            blockers: e.target.value,
-          })
-        }
-      />
-
-      <br />
-      <br />
-
-      <input
-        type="number"
-        placeholder="Hours Worked"
-        value={form.hoursWorked}
-        onChange={(e) =>
-          setForm({
-            ...form,
-            hoursWorked: Number(e.target.value),
-          })
-        }
-      />
-
-      <br />
-      <br />
-
-      <textarea
-        placeholder="Notes"
-        value={form.notes}
-        onChange={(e) =>
-          setForm({
-            ...form,
-            notes: e.target.value,
-          })
-        }
-      />
-
-      <br />
-      <br />
-
-      <button onClick={save}>
-        {report ? "Update" : "Create"}
-      </button>
-
-      <button
-        style={{ marginLeft: 10 }}
-        onClick={onSuccess}
-      >
-        Cancel
-      </button>
+      <div className="report-form-actions">
+        <button className="report-form-btn report-form-btn-primary" onClick={save}>
+          {report ? "Update" : "Create"}
+        </button>
+        <button className="report-form-btn report-form-btn-secondary" onClick={onSuccess}>
+          Cancel
+        </button>
+      </div>
     </div>
   );
 }
