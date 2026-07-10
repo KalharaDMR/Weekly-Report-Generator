@@ -342,9 +342,3 @@ npx prisma migrate reset
 BSc (Hons) Information Technology Specializing in Software Engineering
 
 SLIIT
-
----
-
-# License
-
-This project was developed for academic purposes as part of the Software Engineering degree program at SLIIT.
