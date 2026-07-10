@@ -1,3 +1,9 @@
+import {
+  Card,
+  CardContent,
+  Typography,
+} from "@mui/material";
+
 interface Props {
   title: string;
   value: number | string;
@@ -8,17 +14,27 @@ export default function DashboardCard({
   value,
 }: Props) {
   return (
-    <div
-      style={{
-        background: "white",
-        padding: 20,
-        borderRadius: 10,
-        width: 220,
+    <Card
+      sx={{
+        minWidth: 220,
+        borderRadius: 3,
       }}
     >
-      <h4>{title}</h4>
+      <CardContent>
+        <Typography
+          color="text.secondary"
+          gutterBottom
+        >
+          {title}
+        </Typography>
 
-      <h2>{value}</h2>
-    </div>
+        <Typography
+          variant="h4"
+          fontWeight="bold"
+        >
+          {value}
+        </Typography>
+      </CardContent>
+    </Card>
   );
 }

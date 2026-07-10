@@ -1,16 +1,26 @@
 import api from "../api/axios";
 
-export const getSummary = async () => {
-  const res = await api.get("/dashboard/summary");
-  return res.data;
-};
+function authHeader() {
+  return {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  };
+}
 
-export const getCharts = async () => {
-  const res = await api.get("/dashboard/charts");
-  return res.data;
-};
+export const DashboardService = {
+  async getStats() {
+    const reports = await api.get("/reports/me", authHeader());
 
-export const getActivity = async () => {
-  const res = await api.get("/dashboard/activity");
-  return res.data;
+    const data = reports.data;
+
+    return {
+      total: data.length,
+      draft: data.filter((r: any) => r.status === "DRAFT").length,
+      submitted: data.filter((r: any) => r.status === "SUBMITTED").length,
+      reviewed: data.filter((r: any) => r.status === "REVIEWED").length,
+      approved: data.filter((r: any) => r.status === "APPROVED").length,
+      reports: data,
+    };
+  },
 };

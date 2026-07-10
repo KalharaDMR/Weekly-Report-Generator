@@ -1,47 +1,50 @@
-import api from "../api/axios";
+import axios from "../api/axios";
 
-export const getMyReports = async (
-  page = 1,
-  search = ""
-) => {
-  const res = await api.get(
-    `/reports/me?page=${page}&search=${search}`
-  );
+function authHeader() {
+  return {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  };
+}
 
-  return res.data;
-};
+export const ReportService = {
+  myReports() {
+    return axios.get("/reports/me", authHeader());
+  },
 
-export const createReport = async (data: any) => {
-  const res = await api.post("/reports", data);
+  allReports(page = 1, limit = 10, search = "") {
+    return axios.get(
+      `/reports?page=${page}&limit=${limit}&search=${search}`,
+      authHeader(),
+    );
+  },
 
-  return res.data;
-};
+  create(data: any) {
+    return axios.post("/reports", data, authHeader());
+  },
 
-export const updateReport = async (
-  id: string,
-  data: any
-) => {
-  const res = await api.patch(`/reports/${id}`, data);
+  update(id: string, data: any) {
+    return axios.patch(`/reports/${id}`, data, authHeader());
+  },
 
-  return res.data;
-};
+  submit(id: string) {
+    return axios.post(`/reports/${id}/submit`, {}, authHeader());
+  },
 
-export const submitReport = async (
-  id: string
-) => {
-  const res = await api.post(
-    `/reports/${id}/submit`
-  );
+  remove(id: string) {
+    return axios.delete(`/reports/${id}`, authHeader());
+  },
 
-  return res.data;
-};
+  review(id: string, feedback: string) {
+    return axios.patch(`/reports/${id}/review`, { feedback }, authHeader());
+  },
 
-export const deleteReport = async (
-  id: string
-) => {
-  const res = await api.delete(
-    `/reports/${id}`
-  );
+  approve(id: string, feedback: string) {
+    return axios.patch(`/reports/${id}/approve`, { feedback }, authHeader());
+  },
 
-  return res.data;
+  findOne(id: string) {
+    return axios.get(`/reports/${id}`, authHeader());
+  },
 };

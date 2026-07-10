@@ -19,29 +19,41 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (
-    e: React.FormEvent,
-  ) => {
-    e.preventDefault();
+  e: React.FormEvent,
+) => {
+  e.preventDefault();
 
-    try {
-      setLoading(true);
+  try {
+    setLoading(true);
 
-      const response = await login({
-        email,
-        password,
-      });
+    const response = await login({
+      email,
+      password,
+    });
 
-      auth.login(response.accessToken);
+    // Save JWT
+    localStorage.setItem(
+      "token",
+      response.accessToken
+    );
 
-      toast.success("Login successful");
+    // Save role
+    localStorage.setItem(
+      "role",
+      response.user.role
+    );
 
-      navigate("/dashboard");
-    } catch {
-      toast.error("Invalid credentials");
-    } finally {
-      setLoading(false);
-    }
-  };
+    auth.login(response.accessToken);
+
+    toast.success("Login successful");
+
+    navigate("/dashboard");
+  } catch {
+    toast.error("Invalid credentials");
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="auth-container">
@@ -51,30 +63,21 @@ export default function LoginPage() {
         <input
           placeholder="Email"
           value={email}
-          onChange={(e) =>
-            setEmail(e.target.value)
-          }
+          onChange={(e) => setEmail(e.target.value)}
         />
 
         <input
           type="password"
           placeholder="Password"
           value={password}
-          onChange={(e) =>
-            setPassword(e.target.value)
-          }
+          onChange={(e) => setPassword(e.target.value)}
         />
 
-        <button disabled={loading}>
-          {loading ? "Loading..." : "Login"}
-        </button>
+        <button disabled={loading}>{loading ? "Loading..." : "Login"}</button>
       </form>
 
       <p>
-        Don't have an account?{" "}
-        <Link to="/register">
-          Register
-        </Link>
+        Don't have an account? <Link to="/register">Register</Link>
       </p>
     </div>
   );

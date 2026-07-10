@@ -4,13 +4,13 @@ import LoginPage from "../pages/auth/LoginPage";
 import RegisterPage from "../pages/auth/RegisterPage";
 
 import DashboardPage from "../pages/dashboard/DashboardPage";
-import ReportsPage from "../pages/reports/ReportsPage";
+import MyReportsPage from "../pages/reports/MyReportsPage";
 import ProjectsPage from "../pages/projects/ProjectsPage";
 import UsersPage from "../pages/users/UsersPage";
 import AssignmentsPage from "../pages/assignments/AssignmentsPage";
 import CreateReportPage from "../pages/reports/CreateReportPage";
 import EditReportPage from "../pages/reports/EditReportPage";
-
+import ManageReportsPage from "../pages/reports/ManageReportsPage";
 
 import DashboardLayout from "../layouts/DashboardLayout";
 import ProtectedRoute from "./ProtectedRoute";
@@ -20,15 +20,9 @@ export default function AppRoutes() {
     <Routes>
       <Route path="/" element={<Navigate to="/login" />} />
 
-      <Route
-        path="/login"
-        element={<LoginPage />}
-      />
+      <Route path="/login" element={<LoginPage />} />
 
-      <Route
-        path="/register"
-        element={<RegisterPage />}
-      />
+      <Route path="/register" element={<RegisterPage />} />
 
       <Route
         element={
@@ -37,40 +31,28 @@ export default function AppRoutes() {
           </ProtectedRoute>
         }
       >
-        <Route
-          path="/dashboard"
-          element={<DashboardPage />}
-        />
+        <Route path="/dashboard" element={<DashboardPage />} />
 
         <Route
           path="/reports"
-          element={<ReportsPage />}
+          element={
+            localStorage.getItem("role") === "TEAM_MEMBER" ? (
+              <MyReportsPage />
+            ) : (
+              <ManageReportsPage />
+            )
+          }
         />
 
-        <Route
-          path="/projects"
-          element={<ProjectsPage />}
-        />
+        <Route path="/projects" element={<ProjectsPage />} />
 
-        <Route
-          path="/users"
-          element={<UsersPage />}
-        />
+        <Route path="/users" element={<UsersPage />} />
 
-        <Route
-          path="/assignments"
-          element={<AssignmentsPage />}
-        />
+        <Route path="/assignments" element={<AssignmentsPage />} />
 
-        <Route
-    path="/reports/create"
-    element={<CreateReportPage />}
-/>
+        <Route path="/reports/create" element={<CreateReportPage />} />
 
-<Route
-    path="/reports/edit/:id"
-    element={<EditReportPage />}
-/>
+        <Route path="/reports/edit/:id" element={<EditReportPage />} />
       </Route>
     </Routes>
   );
