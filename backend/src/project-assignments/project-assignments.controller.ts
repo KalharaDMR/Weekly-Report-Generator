@@ -20,7 +20,6 @@ import { ProjectAssignmentsService } from './project-assignments.service';
 import { ApiTags } from '@nestjs/swagger';
 import { ApiBearerAuth } from '@nestjs/swagger';
 
-
 @ApiTags('Assignments')
 @ApiBearerAuth()
 @Controller('project-assignments')
@@ -52,5 +51,11 @@ export class ProjectAssignmentsController {
   @Roles(Role.ADMIN, Role.MANAGER)
   remove(@Param('id') id: string) {
     return this.projectAssignmentsService.remove(id);
+  }
+
+  @Get()
+  @Roles(Role.ADMIN, Role.MANAGER)
+  findAll() {
+    return this.projectAssignmentsService.findAll();
   }
 }
