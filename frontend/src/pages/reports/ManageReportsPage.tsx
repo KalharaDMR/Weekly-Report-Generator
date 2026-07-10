@@ -1,8 +1,12 @@
 import { useEffect, useState } from "react";
 import { ReportService } from "../../services/report.service";
+import ReviewModal from "../../components/reports/ReviewModal";
 
 export default function ManageReportsPage() {
   const [reports, setReports] = useState<any[]>([]);
+  const [selectedReport, setSelectedReport] = useState<any>(null);
+
+  const [openModal, setOpenModal] = useState(false);
 
   useEffect(() => {
     loadReports();
@@ -60,25 +64,52 @@ export default function ManageReportsPage() {
 
               <td>
                 {r.status === "SUBMITTED" && (
-                  <button onClick={() => review(r.id)}>
+                  <button
+                    onClick={() => {
+                      setSelectedReport(r);
+                      setOpenModal(true);
+                    }}
+                  >
                     Review
                   </button>
                 )}
 
                 {r.status === "REVIEWED" && (
-                  <button onClick={() => approve(r.id)}>
+                  <button
+                    onClick={() => {
+                      setSelectedReport(r);
+                      setOpenModal(true);
+                    }}
+                  >
                     Approve
                   </button>
                 )}
 
-                {r.status === "APPROVED" && (
-                  <span>Approved</span>
-                )}
+                {r.status === "APPROVED" && <span>Approved</span>}
               </td>
             </tr>
           ))}
         </tbody>
       </table>
+      <ReviewModal
+        report={selectedReport}
+        open={openModal}
+        onClose={() => setOpenModal(false)}
+        onReview={async (feedback) => {
+          await ReportService.review(selectedReport.id, feedback);
+
+          setOpenModal(false);
+
+          loadReports();
+        }}
+        onApprove={async (feedback) => {
+          await ReportService.approve(selectedReport.id, feedback);
+
+          setOpenModal(false);
+
+          loadReports();
+        }}
+      />
     </div>
   );
 }

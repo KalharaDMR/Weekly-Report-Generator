@@ -4,6 +4,8 @@ import { DashboardService } from "../../services/dashboard.service";
 export default function DashboardPage() {
   const [stats, setStats] = useState<any>(null);
 
+  const role = localStorage.getItem("role");
+
   useEffect(() => {
     loadDashboard();
   }, []);
@@ -19,8 +21,11 @@ export default function DashboardPage() {
 
   return (
     <div>
-
-      <h1>Dashboard</h1>
+      <h1>
+        {role === "TEAM_MEMBER"
+          ? "My Dashboard"
+          : "Management Dashboard"}
+      </h1>
 
       <div
         style={{
@@ -32,13 +37,55 @@ export default function DashboardPage() {
       >
         <Card title="Total Reports" value={stats.total} color="#444" />
 
-        <Card title="Draft" value={stats.draft} color="#777" />
+        {role === "TEAM_MEMBER" ? (
+          <>
+            <Card title="Draft" value={stats.draft} color="#777" />
 
-        <Card title="Submitted" value={stats.submitted} color="#f39c12" />
+            <Card
+              title="Submitted"
+              value={stats.submitted}
+              color="#f39c12"
+            />
 
-        <Card title="Reviewed" value={stats.reviewed} color="#3498db" />
+            <Card
+              title="Reviewed"
+              value={stats.reviewed}
+              color="#3498db"
+            />
 
-        <Card title="Approved" value={stats.approved} color="#2ecc71" />
+            <Card
+              title="Approved"
+              value={stats.approved}
+              color="#2ecc71"
+            />
+          </>
+        ) : (
+          <>
+            <Card
+              title="Waiting Review"
+              value={stats.submitted}
+              color="#f39c12"
+            />
+
+            <Card
+              title="Reviewed"
+              value={stats.reviewed}
+              color="#3498db"
+            />
+
+            <Card
+              title="Approved"
+              value={stats.approved}
+              color="#2ecc71"
+            />
+
+            <Card
+              title="Draft Reports"
+              value={stats.draft}
+              color="#777"
+            />
+          </>
+        )}
       </div>
 
       <h2>Recent Reports</h2>
@@ -53,10 +100,16 @@ export default function DashboardPage() {
       >
         <thead>
           <tr>
+            {role !== "TEAM_MEMBER" && <th>Employee</th>}
+
             <th>Project</th>
+
             <th>Week</th>
+
             <th>Status</th>
+
             <th>Hours</th>
+
             <th>Submission</th>
           </tr>
         </thead>
@@ -64,6 +117,10 @@ export default function DashboardPage() {
         <tbody>
           {stats.reports.slice(0, 5).map((report: any) => (
             <tr key={report.id}>
+              {role !== "TEAM_MEMBER" && (
+                <td>{report.user?.name}</td>
+              )}
+
               <td>{report.project.name}</td>
 
               <td>
