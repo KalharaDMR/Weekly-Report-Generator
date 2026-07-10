@@ -1,37 +1,20 @@
-import {
-  Card,
-  CardContent,
-  Typography,
-} from "@mui/material";
+import { Card, CardContent, Typography } from "@mui/material";
+
+import "./DashboardCard.css"; // <-- import the CSS
 
 interface Props {
   title: string;
   value: number | string;
 }
 
-export default function DashboardCard({
-  title,
-  value,
-}: Props) {
+export default function DashboardCard({ title, value }: Props) {
   return (
-    <Card
-      sx={{
-        minWidth: 220,
-        borderRadius: 3,
-      }}
-    >
-      <CardContent>
-        <Typography
-          color="text.secondary"
-          gutterBottom
-        >
+    <Card className="dashboard-card">
+      <CardContent className="dashboard-card-content">
+        <Typography className="dashboard-card-title" gutterBottom>
           {title}
         </Typography>
-
-        <Typography
-          variant="h4"
-          fontWeight="bold"
-        >
+        <Typography className="dashboard-card-value">
           {value}
         </Typography>
       </CardContent>

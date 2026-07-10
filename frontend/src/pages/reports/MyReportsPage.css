@@ -1,0 +1,247 @@
+/* MyReportsPage.css */
+
+.my-reports-page {
+  padding: 0.5rem 0;
+}
+
+.my-reports-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.my-reports-header h2 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+}
+
+.my-reports-btn {
+  padding: 0.45rem 1.5rem;
+  border: none;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.my-reports-btn:active {
+  transform: scale(0.97);
+}
+
+.my-reports-btn-primary {
+  background: #2563eb;
+  color: white;
+}
+
+.my-reports-btn-primary:hover {
+  background: #1d4ed8;
+}
+
+.my-reports-btn-success {
+  background: #16a34a;
+  color: white;
+}
+
+.my-reports-btn-success:hover {
+  background: #15803d;
+}
+
+.my-reports-btn-warning {
+  background: #f59e0b;
+  color: white;
+}
+
+.my-reports-btn-warning:hover {
+  background: #d97706;
+}
+
+.my-reports-btn-danger {
+  background: #ef4444;
+  color: white;
+}
+
+.my-reports-btn-danger:hover {
+  background: #dc2626;
+}
+
+.my-reports-btn-secondary {
+  background: #e2e8f0;
+  color: #1e293b;
+}
+
+.my-reports-btn-secondary:hover {
+  background: #cbd5e1;
+}
+
+.my-reports-table-wrapper {
+  background: #ffffff;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  border: 1px solid #f1f5f9;
+  overflow-x: auto;
+  padding: 0.25rem 0;
+  margin-top: 1.25rem;
+}
+
+.my-reports-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.my-reports-table th {
+  background: #f8fafc;
+  color: #1e293b;
+  font-weight: 600;
+  text-align: left;
+  padding: 0.75rem 1rem;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.my-reports-table td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #f1f5f9;
+  color: #334155;
+}
+
+.my-reports-table tr:hover td {
+  background: #fafcff;
+}
+
+.my-reports-table .status-badge {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: #e2e8f0;
+  color: #475569;
+}
+
+.my-reports-table .status-draft {
+  background: #e2e8f0;
+  color: #475569;
+}
+
+.my-reports-table .status-submitted {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.my-reports-table .status-reviewed {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.my-reports-table .status-approved {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.my-reports-table .submission-badge {
+  display: inline-block;
+  padding: 0.15rem 0.6rem;
+  border-radius: 9999px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  background: #e2e8f0;
+  color: #475569;
+}
+
+.my-reports-table .submission-pending {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.my-reports-table .submission-late {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.my-reports-table .submission-on-time {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.my-reports-table .action-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.my-reports-table .action-btn {
+  padding: 0.25rem 0.7rem;
+  border: none;
+  border-radius: 0.4rem;
+  font-weight: 500;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.my-reports-table .action-btn-edit {
+  background: #3b82f6;
+  color: white;
+}
+
+.my-reports-table .action-btn-edit:hover {
+  background: #2563eb;
+}
+
+.my-reports-table .action-btn-submit {
+  background: #16a34a;
+  color: white;
+}
+
+.my-reports-table .action-btn-submit:hover {
+  background: #15803d;
+}
+
+.my-reports-table .action-btn-delete {
+  background: #ef4444;
+  color: white;
+}
+
+.my-reports-table .action-btn-delete:hover {
+  background: #dc2626;
+}
+
+.my-reports-table .waiting-text {
+  font-size: 0.85rem;
+  color: #94a3b8;
+  font-style: italic;
+}
+
+.my-reports-table .feedback-text {
+  max-width: 120px;
+  word-break: break-word;
+}
+
+.my-reports-empty {
+  text-align: center;
+  color: #94a3b8;
+  padding: 2rem 0;
+  font-size: 0.95rem;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .my-reports-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .my-reports-btn-primary {
+    align-self: stretch;
+  }
+  .my-reports-table th,
+  .my-reports-table td {
+    padding: 0.5rem 0.6rem;
+    font-size: 0.85rem;
+  }
+}
